@@ -155,6 +155,32 @@ async function injectIntoTab(tabId) {
   }
 }
 
+function sendTabMessage(tabId, message) {
+  return new Promise(resolve => {
+    if (!tabId) {
+      resolve(false);
+      return;
+    }
+    chrome.tabs.sendMessage(tabId, message, response => {
+      resolve(!chrome.runtime.lastError && !!response?.ok);
+    });
+  });
+}
+
+async function applyToCurrentTab() {
+  const tab = await getActiveTab();
+  if (!tab?.id || !originFromUrl(tab.url)) return false;
+
+  await syncContentScripts();
+
+  if (await sendTabMessage(tab.id, { type: 'rtlfree:reload' })) {
+    return true;
+  }
+
+  await injectIntoTab(tab.id);
+  return await sendTabMessage(tab.id, { type: 'rtlfree:reload' });
+}
+
 // ============================================================
 // إنشاء القائمة السياقية
 // ============================================================
@@ -416,6 +442,11 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
   } else if (msg.type === 'rtlfree:sync-content-scripts') {
     syncContentScripts()
       .then(() => sendResponse({ ok: true }))
+      .catch(error => sendResponse({ ok: false, error: String(error?.message || error) }));
+    return true;
+  } else if (msg.type === 'rtlfree:apply-current-tab') {
+    applyToCurrentTab()
+      .then(ok => sendResponse({ ok }))
       .catch(error => sendResponse({ ok: false, error: String(error?.message || error) }));
     return true;
   }

@@ -220,6 +220,17 @@ html, body {
   font-weight: 700;
 }
 
+.welcome-credit a,
+.version a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.welcome-credit a:hover,
+.version a:hover {
+  text-decoration: underline;
+}
+
 .features-list {
   list-style: none;
   text-align: start;

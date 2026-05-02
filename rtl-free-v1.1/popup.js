@@ -63,6 +63,7 @@ let settings = { ...DEFAULTS };
 let currentHost = '';
 let currentTab = null;
 let saveTimer = null;
+let applyTimer = null;
 
 // ============================================================
 // التهيئة
@@ -88,7 +89,9 @@ async function loadSettings() {
 function saveSettings() {
   clearTimeout(saveTimer);
   saveTimer = setTimeout(() => {
-    chrome.storage.sync.set({ [STORAGE_KEY]: settings });
+    chrome.storage.sync.set({ [STORAGE_KEY]: settings }, () => {
+      applyCurrentTabSoon();
+    });
   }, 120);
 }
 
@@ -103,6 +106,13 @@ async function syncContentScripts() {
   } catch {
     // قد يكون الـ service worker غير متاح لحظيًا؛ سيزامن عند تغيّر التخزين.
   }
+}
+
+function applyCurrentTabSoon() {
+  clearTimeout(applyTimer);
+  applyTimer = setTimeout(() => {
+    chrome.runtime.sendMessage({ type: 'rtlfree:apply-current-tab' }, () => {});
+  }, 80);
 }
 
 async function detectCurrentSite() {
