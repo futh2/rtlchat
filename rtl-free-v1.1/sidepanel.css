@@ -1,0 +1,249 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --bg: #041412;
+  --surface: #f8fffd;
+  --surface-soft: #ecfeff;
+  --border: rgba(15, 118, 110, 0.16);
+  --ink: #071f1d;
+  --muted: #5f7773;
+  --primary: #0f766e;
+  --primary-2: #14b8a6;
+  --shadow: 0 16px 40px rgba(7, 31, 29, 0.14);
+  --font: "IBM Plex Sans Arabic", "Tajawal", "Segoe UI", Tahoma, sans-serif;
+}
+
+html,
+body {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 90% 0%, rgba(20, 184, 166, 0.2), transparent 34%),
+    linear-gradient(160deg, #041412, #0b302b);
+  color: var(--ink);
+  font-family: var(--font);
+  direction: rtl;
+}
+
+button,
+textarea {
+  font: inherit;
+}
+
+.workspace {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 14px;
+}
+
+.topbar,
+.panel,
+.modebar {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.brand img {
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.brand h1 {
+  font-size: 17px;
+  font-weight: 900;
+  color: var(--ink);
+}
+
+.brand p {
+  font-size: 12px;
+  color: var(--muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.icon-btn {
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface-soft);
+  color: var(--primary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.icon-btn svg {
+  width: 19px;
+  height: 19px;
+}
+
+.modebar {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+  padding: 6px;
+}
+
+.mode {
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--muted);
+  padding: 8px 10px;
+  font-size: 13px;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.mode.active {
+  background: linear-gradient(135deg, var(--primary-2), var(--primary));
+  color: white;
+  box-shadow: 0 8px 18px rgba(15, 118, 110, 0.22);
+}
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-height: 220px;
+}
+
+.output-panel {
+  flex: 1;
+  min-height: 260px;
+}
+
+.panel-head,
+.panel-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 12px;
+  background: var(--surface-soft);
+}
+
+.panel-head {
+  border-bottom: 1px solid var(--border);
+}
+
+.panel-foot {
+  border-top: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.actions {
+  display: flex;
+  gap: 7px;
+}
+
+.mini-btn {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: white;
+  color: var(--ink);
+  padding: 7px 12px;
+  font-size: 12px;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.mini-btn.primary {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
+}
+
+.mini-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+textarea,
+.output {
+  flex: 1;
+  width: 100%;
+  border: 0;
+  outline: 0;
+  resize: none;
+  background: white;
+  color: var(--ink);
+  padding: 14px;
+  font-size: 15px;
+  line-height: 1.9;
+  overflow: auto;
+}
+
+.output:empty::before {
+  content: "النتيجة تظهر هنا...";
+  color: var(--muted);
+}
+
+.output .p {
+  margin-bottom: 12px;
+  white-space: pre-wrap;
+}
+
+.output pre {
+  direction: ltr;
+  text-align: left;
+  padding: 12px;
+  margin: 10px 0;
+  border-radius: 12px;
+  overflow: auto;
+  background: #10201e;
+  color: #e6fffb;
+}
+
+.toast {
+  position: fixed;
+  bottom: 14px;
+  left: 14px;
+  right: 14px;
+  padding: 11px 14px;
+  border-radius: 12px;
+  background: #071f1d;
+  color: white;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 800;
+  opacity: 0;
+  transform: translateY(16px);
+  transition: all 0.2s;
+  pointer-events: none;
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translateY(0);
+}

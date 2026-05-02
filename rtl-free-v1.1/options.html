@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>RTL Free — الإعدادات المتقدمة</title>
+  <link rel="stylesheet" href="options.css">
+</head>
+<body>
+  <div class="container">
+
+    <aside class="sidebar">
+      <div class="sidebar-brand">
+        <div class="logo-big"><img src="icons/icon48.png" alt="" aria-hidden="true"></div>
+        <div>
+          <h1>RTL Free</h1>
+          <p>v1.1.3</p>
+        </div>
+      </div>
+      <nav class="nav">
+        <button class="nav-item active" data-tab="general">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          عام
+        </button>
+        <button class="nav-item" data-tab="typography">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 7 4 4 20 4 20 7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/></svg>
+          الخطوط
+        </button>
+        <button class="nav-item" data-tab="sites">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+          المواقع
+        </button>
+        <button class="nav-item" data-tab="backup">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          النسخ الاحتياطي
+        </button>
+        <button class="nav-item" data-tab="about">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+          حول
+        </button>
+      </nav>
+    </aside>
+
+    <main class="content">
+
+      <!-- ============ Welcome ============ -->
+      <div id="welcome" class="welcome hidden">
+        <div class="welcome-card">
+          <div class="welcome-emoji">أهلًا بك</div>
+          <h2>مرحبًا بك في RTL Free</h2>
+          <p class="welcome-credit">تصميم: <strong>RTLCHAT</strong></p>
+          <p>إضافة احترافية لإصلاح اتجاه النصوص العربية وتخصيص الخطوط على جميع المواقع.</p>
+          <ul class="features-list">
+            <li>كشف تلقائي للنصوص العربية والعبرية والفارسية والأردية</li>
+            <li>4 خطوط عربية احترافية منتقاة + دعم خطوط النظام</li>
+            <li>تحكم كامل في الحجم والتباعد والسُمك</li>
+            <li>زرّ واحد كبير لتفعيل/تعطيل الإضافة بسرعة على أي موقع</li>
+            <li>إعدادات مخصصة لكل موقع</li>
+            <li>دعم Shadow DOM والمحتوى الديناميكي</li>
+          </ul>
+          <button class="btn btn-primary" id="btnStartUsing">ابدأ الاستخدام</button>
+        </div>
+      </div>
+
+      <!-- ============ General ============ -->
+      <section class="tab-content active" id="tab-general">
+        <h2 class="tab-title">الإعدادات العامة</h2>
+        <p class="tab-desc">التحكم الأساسي في تفعيل الإضافة وسلوكها.</p>
+
+        <div class="setting">
+          <div class="setting-info">
+            <h3>كيفية التفعيل</h3>
+            <p>الإضافة تعمل فقط على المواقع التي تُفعّلها عليها من النافذة المنبثقة (الأيقونة في شريط المتصفح)</p>
+          </div>
+        </div>
+
+        <div class="setting">
+          <div class="setting-info">
+            <h3>الكشف التلقائي للنصوص العربية</h3>
+            <p>اكتشاف النصوص العربية تلقائيًا وتطبيق RTL عليها فقط</p>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="autoDetect">
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div class="setting">
+          <div class="setting-info">
+            <h3>فرض RTL على الصفحة بأكملها</h3>
+            <p>تطبيق RTL على كل العناصر بغض النظر عن المحتوى (قد يُخلّ بتخطيط بعض المواقع)</p>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="forceRTL">
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div class="setting">
+          <div class="setting-info">
+            <h3>إصلاح حقول الإدخال</h3>
+            <p>تطبيق dir="auto" على جميع حقول النص والمناطق النصية</p>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="fixInputs">
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div class="setting">
+          <div class="setting-info">
+            <h3>معالجة الأكواد البرمجية</h3>
+            <p>افتراضيًا تُترك الأكواد LTR. فعّل لمعاملتها كنص عادي</p>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="fixCode">
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div class="setting">
+          <div class="setting-info">
+            <h3>تنعيم الخطوط</h3>
+            <p>تطبيق تنعيم لرسم أفضل على شاشات Mac</p>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="smoothFonts">
+            <span class="slider"></span>
+          </label>
+        </div>
+      </section>
+
+      <!-- ============ Typography ============ -->
+      <section class="tab-content" id="tab-typography">
+        <h2 class="tab-title">الخطوط والطباعة</h2>
+        <p class="tab-desc">اختر من الخطوط المنتقاة، أو استخدم خطًا من نظامك، وتحكّم بدقة في كل التفاصيل.</p>
+
+        <div class="setting-block">
+          <label>الخط الافتراضي</label>
+          <select id="fontFamily" class="select-lg"></select>
+
+          <div class="custom-font-box" id="customFontBox" hidden>
+            <div class="custom-font-row">
+              <input type="text" id="customFontName" class="input-lg" placeholder="اكتب اسم الخط من نظامك (أو اكتشفه تلقائيًا)">
+              <button class="btn btn-primary" id="btnDetectFonts" type="button">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                </svg>
+                اكتشاف خطوط النظام
+              </button>
+            </div>
+            <div class="detected-fonts" id="detectedFonts" hidden></div>
+            <p class="hint" id="detectHint">اضغط «اكتشاف خطوط النظام» لفحص كل الخطوط المثبّتة على جهازك وعرضها بمعاينة حيّة. أمثلة: Sakkal Majalla, Traditional Arabic, Dubai, Segoe UI.</p>
+          </div>
+
+          <div class="preview-large" id="previewLarge">
+            <div class="pv-title">بسم الله الرحمن الرحيم</div>
+            <div class="pv-body">
+              الحمد لله رب العالمين، الرحمن الرحيم، مالك يوم الدين. إياك نعبد وإياك نستعين،
+              اهدنا الصراط المستقيم، صراط الذين أنعمت عليهم غير المغضوب عليهم ولا الضالين.
+            </div>
+            <div class="pv-numbers">الأرقام: ٠١٢٣٤٥٦٧٨٩ · 0123456789</div>
+            <div class="pv-mixed">النص المختلط: Hello مرحبًا World عالم!</div>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="setting-block">
+            <label>حجم الخط: <span id="fontSizeVal">100%</span></label>
+            <input type="range" id="fontSize" class="range" min="60" max="200" step="5">
+          </div>
+          <div class="setting-block">
+            <label>سُمك الخط: <span id="fontWeightVal">400</span></label>
+            <input type="range" id="fontWeight" class="range" min="300" max="800" step="100">
+          </div>
+          <div class="setting-block">
+            <label>تباعد الأسطر: <span id="lineHeightVal">1.8</span></label>
+            <input type="range" id="lineHeight" class="range" min="1" max="3" step="0.1">
+          </div>
+          <div class="setting-block">
+            <label>تباعد الأحرف: <span id="letterSpacingVal">0</span></label>
+            <input type="range" id="letterSpacing" class="range" min="-0.05" max="0.2" step="0.01">
+          </div>
+        </div>
+
+        <div class="setting">
+          <div class="setting-info">
+            <h3>إخفاء التشكيل (الحركات)</h3>
+            <p>إخفاء الفتحة والضمة والكسرة والسكون والشدة</p>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="hideTashkeel">
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div class="setting-block">
+          <label>نوع الأرقام</label>
+          <div class="segmented large">
+            <input type="radio" name="numerals" id="opt-num-none" value="none">
+            <label for="opt-num-none">كما هي</label>
+            <input type="radio" name="numerals" id="opt-num-hindi" value="hindi">
+            <label for="opt-num-hindi">عربية ١٢٣</label>
+            <input type="radio" name="numerals" id="opt-num-arabic" value="arabic">
+            <label for="opt-num-arabic">لاتينية 123</label>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ Sites ============ -->
+      <section class="tab-content" id="tab-sites">
+        <h2 class="tab-title">المواقع المُفعَّلة</h2>
+        <p class="tab-desc">الإضافة تعمل فقط على المواقع المُدرجة هنا. الطريقة الأسهل: افتح الموقع واضغط أيقونة RTL Free ثم زر التفعيل.</p>
+
+        <div class="setting-block">
+          <label>
+            <h3 style="margin-bottom:4px">إضافة موقع يدويًا</h3>
+            <span class="hint">أدخل النطاق بدون http. مثال: <code>rtlchat.com</code></span>
+          </label>
+          <div class="tag-input" id="enabledSitesBox">
+            <input type="text" id="enabledSiteInput" placeholder="أدخل النطاق واضغط Enter">
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ Backup ============ -->
+      <section class="tab-content" id="tab-backup">
+        <h2 class="tab-title">النسخ الاحتياطي</h2>
+        <p class="tab-desc">استورد أو صدّر جميع إعداداتك.</p>
+
+        <div class="grid-2">
+          <div class="action-card">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            <h3>تصدير الإعدادات</h3>
+            <p>حفظ إعداداتك في ملف JSON</p>
+            <button class="btn btn-secondary" id="btnExport">تصدير</button>
+          </div>
+          <div class="action-card">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            <h3>استيراد الإعدادات</h3>
+            <p>استعادة من ملف JSON محفوظ</p>
+            <input type="file" id="fileImport" accept=".json" style="display:none">
+            <button class="btn btn-secondary" id="btnImport">استيراد</button>
+          </div>
+          <div class="action-card danger">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
+            <h3>إعادة التعيين</h3>
+            <p>حذف جميع الإعدادات والعودة للافتراضي</p>
+            <button class="btn btn-danger" id="btnResetAll">إعادة التعيين</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ About ============ -->
+      <section class="tab-content" id="tab-about">
+        <h2 class="tab-title">حول الإضافة</h2>
+        <div class="about">
+          <div class="about-hero">
+            <div class="about-hero-main">
+              <div class="logo-xl"><img src="icons/icon128.png" alt="" aria-hidden="true"></div>
+              <div>
+                <h1>RTL Free</h1>
+                <p class="version">الإصدار 1.1.3 · تصميم RTLCHAT</p>
+                <p class="tagline">إضافة خفيفة لإصلاح اتجاه النصوص العربية وتحسين القراءة والكتابة داخل المواقع التي تختار تفعيلها عليها.</p>
+              </div>
+            </div>
+            <div class="about-stats" aria-label="ملخص الإضافة">
+              <span>محلي</span>
+              <span>بدون تتبع</span>
+              <span>إذن لكل موقع</span>
+            </div>
+          </div>
+
+          <div class="about-grid">
+            <article class="about-card">
+              <h3>ماذا تفعل؟</h3>
+              <ul class="about-list">
+                <li>تكتشف النصوص العربية وتضبط اتجاهها تلقائيًا.</li>
+                <li>تحافظ على الأكواد والروابط والواجهات المختلطة.</li>
+                <li>تدعم المحتوى الديناميكي و Shadow DOM.</li>
+              </ul>
+            </article>
+
+            <article class="about-card">
+              <h3>التخصيص</h3>
+              <ul class="about-list">
+                <li>خطوط عربية جاهزة مع دعم خطوط النظام.</li>
+                <li>تحكم بالحجم والسُمك وتباعد الأسطر والأحرف.</li>
+                <li>تحويل الأرقام وإخفاء التشكيل عند الحاجة.</li>
+              </ul>
+            </article>
+
+            <article class="about-card">
+              <h3>الخصوصية</h3>
+              <p>لا تجمع الإضافة بيانات شخصية. الإعدادات تُحفظ في متصفحك، وتفعيل كل موقع يتم بإذن واضح من كروم.</p>
+            </article>
+
+            <article class="about-card">
+              <h3>مساحة العمل</h3>
+              <p>لوحة جانبية لمعالجة النصوص العربية ونسخ النتيجة كنص أو HTML بدون إرسال المحتوى لأي خادم.</p>
+            </article>
+          </div>
+
+          <div class="about-credit">
+            <h3>ملاحظة الصلاحيات</h3>
+            <p>عند الضغط على تفعيل موقع، يطلب كروم السماح لذلك النطاق فقط. بعد الموافقة يُضاف النطاق إلى قائمة المواقع المُفعّلة وتُحدّث الصفحة لتطبيق الإضافة.</p>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="options.js"></script>
+</body>
+</html>
