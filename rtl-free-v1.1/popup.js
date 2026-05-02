@@ -111,8 +111,16 @@ async function syncContentScripts() {
 function applyCurrentTabSoon() {
   clearTimeout(applyTimer);
   applyTimer = setTimeout(() => {
-    chrome.runtime.sendMessage({ type: 'rtlfree:apply-current-tab' }, () => {});
+    applyCurrentTabNow();
   }, 80);
+}
+
+async function applyCurrentTabNow() {
+  try {
+    await chrome.runtime.sendMessage({ type: 'rtlfree:apply-current-tab' });
+  } catch {
+    // بعض الصفحات الداخلية لا تقبل حقن الإضافة.
+  }
 }
 
 async function detectCurrentSite() {
@@ -285,15 +293,6 @@ async function requestSitePermission(origin) {
   return await chrome.permissions.request({ origins: [origin] });
 }
 
-async function reloadCurrentTab() {
-  if (!currentTab?.id) return;
-  try {
-    await chrome.tabs.reload(currentTab.id);
-  } catch {
-    // بعض الصفحات الداخلية لا تسمح بإعادة التحميل من الإضافة.
-  }
-}
-
 async function toggleCurrentSite() {
   if (!currentHost) return;
   const origin = currentSiteOrigin();
@@ -307,7 +306,7 @@ async function toggleCurrentSite() {
     await persistSettings();
     await syncContentScripts();
     renderState();
-    await reloadCurrentTab();
+    await applyCurrentTabNow();
     return;
   }
 
@@ -331,7 +330,7 @@ async function toggleCurrentSite() {
   await persistSettings();
   await syncContentScripts();
   renderState();
-  await reloadCurrentTab();
+  await applyCurrentTabNow();
 }
 
 // ============================================================
