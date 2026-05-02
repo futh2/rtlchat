@@ -97,6 +97,14 @@ async function persistSettings() {
   await chrome.storage.sync.set({ [STORAGE_KEY]: settings });
 }
 
+async function syncContentScripts() {
+  try {
+    await chrome.runtime.sendMessage({ type: 'rtlfree:sync-content-scripts' });
+  } catch {
+    // قد يكون الـ service worker غير متاح لحظيًا؛ سيزامن عند تغيّر التخزين.
+  }
+}
+
 async function detectCurrentSite() {
   const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
   currentTab = tab || null;
@@ -287,6 +295,7 @@ async function toggleCurrentSite() {
     set.delete(currentHost);
     settings.enabledSites = [...set];
     await persistSettings();
+    await syncContentScripts();
     renderState();
     await reloadCurrentTab();
     return;
@@ -310,6 +319,7 @@ async function toggleCurrentSite() {
   set.add(currentHost);
   settings.enabledSites = [...set];
   await persistSettings();
+  await syncContentScripts();
   renderState();
   await reloadCurrentTab();
 }

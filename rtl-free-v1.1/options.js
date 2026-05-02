@@ -390,16 +390,34 @@ function bindTagInputs() {
   setupTagInput('enabledSiteInput', 'enabledSitesBox', 'enabledSites');
 }
 
+function permissionOriginsForSite(site) {
+  const clean = String(site || '').trim().replace(/^https?:\/\//, '').replace(/\/.*$/, '').toLowerCase();
+  if (!clean) return [];
+  return [`https://${clean}/*`, `http://${clean}/*`];
+}
+
+async function requestSitePermission(site) {
+  const origins = permissionOriginsForSite(site);
+  if (!origins.length) return false;
+  if (await chrome.permissions.contains({ origins })) return true;
+  return await chrome.permissions.request({ origins });
+}
+
 function setupTagInput(inputId, containerId, settingKey) {
   const input = $(inputId);
   const container = $(containerId);
   if (!input || !container) return;
 
-  input.addEventListener('keydown', e => {
+  input.addEventListener('keydown', async e => {
     if (e.key === 'Enter' || e.key === ',') {
       e.preventDefault();
       const val = input.value.trim().replace(/^https?:\/\//, '').replace(/\/.*$/, '').toLowerCase();
       if (val && !settings[settingKey].includes(val)) {
+        const allowed = await requestSitePermission(val);
+        if (!allowed) {
+          showToast('لم يتم منح إذن هذا الموقع', 'error');
+          return;
+        }
         settings[settingKey] = [...settings[settingKey], val];
         saveSettings();
         renderTags(containerId, settingKey, inputId);

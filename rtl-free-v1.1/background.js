@@ -4,6 +4,7 @@
  */
 
 const STORAGE_KEY = 'rtlfree_settings';
+const SCRIPT_ID_PREFIX = 'rtlfree-site-';
 
 const DEFAULTS = {
   autoDetect: true,
@@ -42,6 +43,116 @@ async function getActiveHost() {
   try {
     return new URL(tab.url).hostname.toLowerCase();
   } catch { return null; }
+}
+
+async function getActiveTab() {
+  const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+  return tab || null;
+}
+
+function originFromUrl(url) {
+  if (!url) return '';
+  try {
+    const parsed = new URL(url);
+    if (!['http:', 'https:'].includes(parsed.protocol)) return '';
+    return `${parsed.protocol}//${parsed.hostname}/*`;
+  } catch {
+    return '';
+  }
+}
+
+function hostFromPattern(pattern) {
+  try {
+    const stripped = String(pattern || '').replace(/\/\*$/, '/');
+    return new URL(stripped).hostname.replace(/^\*\./, '').toLowerCase();
+  } catch {
+    return '';
+  }
+}
+
+function matchesEnabledSite(host, enabledSites = []) {
+  return enabledSites.some(site => {
+    const clean = String(site || '').trim().toLowerCase().replace(/^\*\./, '').replace(/^https?:\/\//, '').replace(/\/.*$/, '');
+    return clean && (host === clean || host.endsWith('.' + clean));
+  });
+}
+
+function scriptId(kind, origin) {
+  const scheme = origin.startsWith('https://') ? 'https' : 'http';
+  const host = hostFromPattern(origin).replace(/[^a-z0-9_-]/gi, '-').slice(0, 80);
+  return `${SCRIPT_ID_PREFIX}${kind}-${scheme}-${host}`;
+}
+
+async function grantedOriginsForEnabledSites(settings) {
+  const all = await chrome.permissions.getAll();
+  return [...new Set((all.origins || []).filter(origin => {
+    if (!/^https?:\/\/.+\/\*$/.test(origin)) return false;
+    const host = hostFromPattern(origin);
+    return host && matchesEnabledSite(host, settings.enabledSites || []);
+  }))];
+}
+
+async function syncContentScripts() {
+  if (!chrome.scripting?.getRegisteredContentScripts) return;
+
+  const settings = await getSettings();
+  const origins = await grantedOriginsForEnabledSites(settings);
+  const registered = await chrome.scripting.getRegisteredContentScripts();
+  const managedIds = registered
+    .map(script => script.id)
+    .filter(id => id?.startsWith(SCRIPT_ID_PREFIX));
+
+  if (managedIds.length) {
+    await chrome.scripting.unregisterContentScripts({ ids: managedIds });
+  }
+
+  if (!origins.length) return;
+
+  const scripts = origins.flatMap(origin => ([
+    {
+      id: scriptId('shadow', origin),
+      matches: [origin],
+      js: ['force-open-shadow.js'],
+      runAt: 'document_start',
+      allFrames: true,
+      matchAboutBlank: true,
+      world: 'MAIN',
+      persistAcrossSessions: true
+    },
+    {
+      id: scriptId('content', origin),
+      matches: [origin],
+      js: ['content.js'],
+      css: ['injected.css'],
+      runAt: 'document_start',
+      allFrames: true,
+      matchAboutBlank: true,
+      persistAcrossSessions: true
+    }
+  ]));
+
+  await chrome.scripting.registerContentScripts(scripts);
+}
+
+async function injectIntoTab(tabId) {
+  if (!tabId) return;
+  try {
+    await chrome.scripting.executeScript({
+      target: { tabId, allFrames: true },
+      files: ['force-open-shadow.js'],
+      world: 'MAIN'
+    });
+    await chrome.scripting.insertCSS({
+      target: { tabId, allFrames: true },
+      files: ['injected.css']
+    });
+    await chrome.scripting.executeScript({
+      target: { tabId, allFrames: true },
+      files: ['content.js']
+    });
+  } catch (e) {
+    // صفحات المتصفح الداخلية وبعض صفحات المتجر لا تسمح بالحقن.
+  }
 }
 
 // ============================================================
@@ -95,14 +206,16 @@ function createContextMenus() {
 
 chrome.runtime.onInstalled.addListener(async (details) => {
   createContextMenus();
+  await syncContentScripts();
   if (details.reason === 'install') {
     await saveSettings(DEFAULTS);
     chrome.tabs.create({ url: chrome.runtime.getURL('options.html?welcome=1') });
   }
 });
 
-chrome.runtime.onStartup.addListener(() => {
+chrome.runtime.onStartup.addListener(async () => {
   createContextMenus();
+  await syncContentScripts();
 });
 
 // ============================================================
@@ -168,13 +281,30 @@ chrome.commands.onCommand.addListener(async (command) => {
 // ============================================================
 
 async function toggleSite() {
-  const host = await getActiveHost();
+  const tab = await getActiveTab();
+  const host = tab?.url ? (() => {
+    try { return new URL(tab.url).hostname.toLowerCase(); } catch { return null; }
+  })() : null;
   if (!host) return;
+
   const settings = await getSettings();
   const enabled = new Set(settings.enabledSites || []);
-  if (enabled.has(host)) enabled.delete(host);
-  else enabled.add(host);
+  const isEnabled = enabled.has(host);
+
+  if (isEnabled) {
+    enabled.delete(host);
+  } else {
+    const origin = originFromUrl(tab.url);
+    if (!origin) return;
+    const hasPermission = await chrome.permissions.contains({ origins: [origin] });
+    const allowed = hasPermission || await chrome.permissions.request({ origins: [origin] });
+    if (!allowed) return;
+    enabled.add(host);
+  }
+
   await saveSettings({ ...settings, enabledSites: [...enabled] });
+  await syncContentScripts();
+  if (!isEnabled) await injectIntoTab(tab.id);
   await updateBadge();
 }
 
@@ -266,7 +396,10 @@ chrome.tabs.onUpdated.addListener((tabId, info) => {
 });
 
 chrome.storage.onChanged.addListener((changes, area) => {
-  if (area === 'sync' && changes[STORAGE_KEY]) updateBadge();
+  if (area === 'sync' && changes[STORAGE_KEY]) {
+    syncContentScripts().catch(() => {});
+    updateBadge();
+  }
 });
 
 // ============================================================
@@ -280,5 +413,10 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     sendResponse({ ok: true });
   } else if (msg.type === 'rtlfree:get-defaults') {
     sendResponse({ defaults: DEFAULTS });
+  } else if (msg.type === 'rtlfree:sync-content-scripts') {
+    syncContentScripts()
+      .then(() => sendResponse({ ok: true }))
+      .catch(error => sendResponse({ ok: false, error: String(error?.message || error) }));
+    return true;
   }
 });
